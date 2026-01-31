@@ -4,6 +4,7 @@ import Layout from "../../components/layout/Layout";
 
 export default function StudentDashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return null;
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,13 +40,14 @@ export default function StudentDashboard() {
   };
 
   if (loading) {
-    return (
-      <Layout>
-        <p>Loading projects...</p>
-      </Layout>
-    );
-  }
-
+  return (
+    <Layout>
+      <p className="animate-pulse text-gray-500">
+        Loading your projects...
+      </p>
+    </Layout>
+  );
+}
   return (
     <Layout>
       <h1 className="text-2xl font-bold mb-6">
