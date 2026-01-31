@@ -14,10 +14,15 @@ export default function SubmitProject() {
   });
 
   const submit = async () => {
-    if(!user.rollNo || !user.department || !user.title || !user.description){
-      alert("Enter all details to submit");
-      return;
-    }
+    if (
+    !form.rollNo ||
+    !form.department ||
+    !form.title ||
+    !form.description
+  ) {
+    alert("Enter all details to submit");
+    return;
+  }
     try {
       await axios.post(
         "https://project-monitoring-evaluation-system.onrender.com/api/student/submit",
