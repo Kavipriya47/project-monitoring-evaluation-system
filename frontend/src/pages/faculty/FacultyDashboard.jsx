@@ -12,7 +12,7 @@ export default function FacultyDashboard() {
   // Load all projects
   const loadProjects = async () => {
     const res = await axios.get(
-      "http://localhost:4000/api/faculty/projects"
+      "https://project-monitoring-evaluation-system.onrender.com/api/faculty/projects"
     );
     setProjects(res.data);
   };
@@ -24,7 +24,7 @@ export default function FacultyDashboard() {
   // normal review (marks + remarks)
   const reviewProject = async (id, status) => {
     await axios.put(
-      `http://localhost:4000/api/faculty/review/${id}`,
+      `https://project-monitoring-evaluation-system.onrender.com/api/faculty/review/${id}`,
       {
         marks: marks[id],
         remarks: remarks[id],
@@ -38,7 +38,7 @@ export default function FacultyDashboard() {
   // FINAL LOCK
   const finalizeProject = async (id) => {
     await axios.put(
-      `http://localhost:4000/api/faculty/final/${id}`
+      `https://project-monitoring-evaluation-system.onrender.com/api/faculty/final/${id}`
     );
 
     loadProjects();

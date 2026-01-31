@@ -12,7 +12,7 @@ export default function ViewStatus() {
     const loadStatus = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/student/my/${user.email}`
+          `https://project-monitoring-evaluation-system.onrender.com/api/student/my/${user.email}`
         );
         setProjects(res.data);
       } catch (err) {

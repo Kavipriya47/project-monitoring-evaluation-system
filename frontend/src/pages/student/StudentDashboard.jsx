@@ -11,7 +11,7 @@ export default function StudentDashboard() {
     const loadProjects = useCallback(async () => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/student/my/${user.email}`
+        `https://project-monitoring-evaluation-system.onrender.com/api/student/my/${user.email}`
       );
       setProjects(res.data);
     } catch (err) {
@@ -30,7 +30,7 @@ export default function StudentDashboard() {
   const updateStage = async (id, stage) => {
     try {
       await axios.put(
-        `http://localhost:4000/api/student/update/${id}`,
+        `https://project-monitoring-evaluation-system.onrender.com/api/student/update/${id}`,
         { stage }
       );
       loadProjects();

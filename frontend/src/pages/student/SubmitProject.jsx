@@ -20,7 +20,7 @@ export default function SubmitProject() {
     }
     try {
       await axios.post(
-        "http://localhost:4000/api/student/submit",
+        "https://project-monitoring-evaluation-system.onrender.com/api/student/submit",
         {
           ...form,
           studentName: user.name,

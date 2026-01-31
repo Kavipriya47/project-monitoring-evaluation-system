@@ -15,7 +15,7 @@ export default function Login() {
 
       // send to backend
       const response = await axios.post(
-        "http://localhost:4000/api/auth/google",
+        "https://project-monitoring-evaluation-system.onrender.com/api/auth/google",
         {
           name: decoded.name,
           email: decoded.email
