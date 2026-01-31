@@ -3,12 +3,16 @@ import { useEffect, useState, useCallback } from "react";
 import Layout from "../../components/layout/Layout";
 
 export default function StudentDashboard() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return null;
+
+  // ✅ Hooks FIRST
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    const loadProjects = useCallback(async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const loadProjects = useCallback(async () => {
+    if (!user) return;
+
     try {
       const res = await axios.get(
         `https://project-monitoring-evaluation-system.onrender.com/api/student/my/${user.email}`
@@ -19,13 +23,11 @@ export default function StudentDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [user.email]);
+  }, [user]);
 
   useEffect(() => {
     loadProjects();
   }, [loadProjects]);
-
-
 
   const updateStage = async (id, stage) => {
     try {
@@ -39,23 +41,36 @@ export default function StudentDashboard() {
     }
   };
 
+  // ✅ Conditional returns AFTER hooks
+  if (!user) {
+    return (
+      <Layout>
+        <p className="text-red-600 font-semibold">
+          Please login to view your projects.
+        </p>
+      </Layout>
+    );
+  }
+
   if (loading) {
+    return (
+      <Layout>
+        <p className="animate-pulse text-gray-500">
+          Loading your projects...
+        </p>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      <p className="animate-pulse text-gray-500">
-        Loading your projects...
-      </p>
-    </Layout>
-  );
-}
-  return (
-    <Layout>
-      <h1 className="text-2xl font-bold mb-6">
-        Welcome , {user?.name}
+      <h1 className="text-2xl font-bold mb-2">
+        Welcome, {user.name}
       </h1>
-      <h1 className="text-2xl font-bold mb-6">
+
+      <h2 className="text-xl font-bold mb-6">
         My Projects
-      </h1>
+      </h2>
 
       {projects.length === 0 && (
         <p className="text-gray-600">
