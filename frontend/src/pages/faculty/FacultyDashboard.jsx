@@ -3,60 +3,64 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function FacultyDashboard() {
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const [projects, setProjects] = useState([]);
   const [marks, setMarks] = useState({});
   const [remarks, setRemarks] = useState({});
 
   // Load all projects
   const loadProjects = async () => {
-    const res = await axios.get(
-      "https://project-monitoring-evaluation-system.onrender.com/api/faculty/projects"
-    );
-    setProjects(res.data);
+    try {
+      const res = await axios.get(
+        "https://project-monitoring-evaluation-system.onrender.com/api/faculty/projects"
+      );
+      setProjects(res.data);
+    } catch (err) {
+      console.error("Error loading projects:", err);
+    }
   };
 
   useEffect(() => {
     loadProjects();
   }, []);
 
-  // normal review (marks + remarks)
+  // Normal review (marks + remarks)
   const reviewProject = async (id, status) => {
-    await axios.put(
-      `https://project-monitoring-evaluation-system.onrender.com/api/faculty/review/${id}`,
-      {
-        marks: marks[id],
-        remarks: remarks[id],
-        status
-      }
-    );
-
-    loadProjects();
+    try {
+      await axios.put(
+        `https://project-monitoring-evaluation-system.onrender.com/api/faculty/review/${id}`,
+        {
+          marks: Number(marks[id] ?? 0),
+          remarks: remarks[id] ?? "",
+          status,
+        }
+      );
+      loadProjects();
+    } catch (err) {
+      console.error("Error reviewing project:", err);
+    }
   };
 
-  // FINAL LOCK
+  // Final lock
   const finalizeProject = async (id) => {
-    await axios.put(
-      `https://project-monitoring-evaluation-system.onrender.com/api/faculty/final/${id}`
-    );
-
-    loadProjects();
+    try {
+      await axios.put(
+        `https://project-monitoring-evaluation-system.onrender.com/api/faculty/final/${id}`
+      );
+      loadProjects();
+    } catch (err) {
+      console.error("Error finalizing project:", err);
+    }
   };
 
   const badgeColor = (status) => {
-    if (status === "approved")
-      return "bg-green-100 text-green-700";
-    if (status === "rejected")
-      return "bg-red-100 text-red-700";
+    if (status === "approved") return "bg-green-100 text-green-700";
+    if (status === "rejected") return "bg-red-100 text-red-700";
     return "bg-yellow-100 text-yellow-700";
   };
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">
-        Faculty Dashboard
-      </h1>
+      <h1 className="text-2xl font-bold mb-4">Faculty Dashboard</h1>
 
       <div className="bg-white p-6 rounded shadow overflow-x-auto">
         <table className="w-full border text-sm">
@@ -80,7 +84,6 @@ export default function FacultyDashboard() {
                 <td className="border p-2">{p.title}</td>
                 <td className="border p-2">{p.stage}</td>
                 <td className="border p-2">{p.progress}%</td>
-
                 <td className="border p-2">
                   <span
                     className={`px-3 py-1 rounded-full text-xs ${badgeColor(
@@ -90,7 +93,6 @@ export default function FacultyDashboard() {
                     {p.status}
                   </span>
                 </td>
-
                 <td className="border p-2">
                   <input
                     type="number"
@@ -98,14 +100,10 @@ export default function FacultyDashboard() {
                     disabled={p.locked}
                     value={marks[p._id] ?? p.marks ?? ""}
                     onChange={(e) =>
-                      setMarks({
-                        ...marks,
-                        [p._id]: e.target.value
-                      })
+                      setMarks({ ...marks, [p._id]: e.target.value })
                     }
                   />
                 </td>
-
                 <td className="border p-2">
                   <textarea
                     className="border p-1 w-48"
@@ -113,31 +111,23 @@ export default function FacultyDashboard() {
                     disabled={p.locked}
                     value={remarks[p._id] ?? p.remarks ?? ""}
                     onChange={(e) =>
-                      setRemarks({
-                        ...remarks,
-                        [p._id]: e.target.value
-                      })
+                      setRemarks({ ...remarks, [p._id]: e.target.value })
                     }
                   />
                 </td>
-
                 <td className="border p-2 space-y-1">
                   {!p.locked && (
                     <>
                       <button
                         className="bg-green-600 text-white px-3 py-1 rounded mr-1"
-                        onClick={() =>
-                          reviewProject(p._id, "approved")
-                        }
+                        onClick={() => reviewProject(p._id, "approved")}
                       >
                         Approve
                       </button>
 
                       <button
                         className="bg-red-600 text-white px-3 py-1 rounded mr-1"
-                        onClick={() =>
-                          reviewProject(p._id, "rejected")
-                        }
+                        onClick={() => reviewProject(p._id, "rejected")}
                       >
                         Reject
                       </button>
@@ -146,9 +136,7 @@ export default function FacultyDashboard() {
 
                   {p.progress >= 90 && !p.locked && (
                     <button
-                      onClick={() =>
-                        finalizeProject(p._id)
-                      }
+                      onClick={() => finalizeProject(p._id)}
                       className="bg-black text-white px-3 py-1 rounded"
                     >
                       Finalize
@@ -156,9 +144,7 @@ export default function FacultyDashboard() {
                   )}
 
                   {p.locked && (
-                    <span className="text-xs text-gray-500">
-                      Finalized
-                    </span>
+                    <span className="text-xs text-gray-500">Finalized</span>
                   )}
                 </td>
               </tr>
